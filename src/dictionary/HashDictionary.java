@@ -4,18 +4,16 @@ import java.util.Iterator;
 import java.lang.IllegalArgumentException;
 import java.util.NoSuchElementException;
 
-import java.util.List;
 import java.util.LinkedList;
 
 
 public class HashDictionary<K, V> implements Dictionary<K, V> {
-    //private static final int DEF_CAPACITY = 16;
     private int size;
     private int elemente;
     private LinkedList<Entry<K, V>>[] data;
 
         public HashDictionary(int m) {
-            if (!isPrime(m))
+            if (isNotPrime(m))
                 throw new IllegalArgumentException("Number must be a Prime Number!");
             size = m;
             elemente = 0;
@@ -27,20 +25,20 @@ public class HashDictionary<K, V> implements Dictionary<K, V> {
 
     // isPrime checkt ob es sich um eine Prime zahl handelt
     // code von: https://stackoverflow.com/questions/46877785/java-prime-number-check-with-user-input
-    private boolean isPrime(final int in) {
+    private boolean isNotPrime(final int in) {
         if (in < 2)
-            return false;
+            return true;
         for (int i = 2; i <= Math.sqrt(in); i++){
             if (in % i == 0){
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     private int nextPrime(int i) {
         i++;
-        while (!isPrime(i)) {
+        while (isNotPrime(i)) {
             i++;
         }
         return i;
@@ -67,7 +65,7 @@ public class HashDictionary<K, V> implements Dictionary<K, V> {
 
     private void reSize() {
         LinkedList<Entry<K, V>>[] temp = data;
-        int newSize = nextPrime(size);
+        int newSize = nextPrime(size * 2);
         size = newSize;
         elemente = 0;
         data = new LinkedList[newSize];
@@ -116,12 +114,12 @@ public class HashDictionary<K, V> implements Dictionary<K, V> {
 
     @Override
     public int size() {
-        return size;
+        return elemente;
     }
 
     @Override
     public Iterator<Entry<K, V>> iterator() {
-        return new Iterator<Entry<K, V>>() {
+        return new Iterator<>() {
             private int i = 0;
             private int j = 0;
 
